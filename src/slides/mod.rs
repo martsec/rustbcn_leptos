@@ -8,6 +8,14 @@ use leptos_hotkeys::use_hotkeys;
 use crate::components::ProgressBar;
 use crate::server_fns::update_slides;
 use crate::server_fns::SlideStatistics;
+use crate::slides::a_intro::{AboutMe, Initial};
+use crate::slides::b_leptos::ViewMacro;
+use crate::slides::d_final::AiBots;
+
+mod a_intro;
+mod b_leptos;
+mod c_ecosystem;
+mod d_final;
 
 #[component]
 pub fn SlidesPage() -> impl IntoView {
@@ -15,43 +23,63 @@ pub fn SlidesPage() -> impl IntoView {
 }
 
 #[component]
-pub fn Slide(title: &'static str, children: Children) -> impl IntoView {
-    view! {
-        <section class="aspect-video w-full  p-8 flex flex-col gap-4">
+fn Slide(title: &'static str, children: Children) -> impl IntoView {
+    let step = RwSignal::new(0_u8);
+    provide_context(step);
 
-            // use:animate=(In::default()
-            // .source("opacity-0")
-            // .active("duration-1500")
-            // .target("opacity-100"),
-            // Out::default()
-            // .source("opacity-100")
-            // .active("duration-1500")
-            // .target("opacity-0")
-            // )
-            <h2 class="text-2xl font-semibold tracking-tight">{title}</h2>
+    use_hotkeys!(("arrowdown,j") => move |_| {
+        step.update(|s| *s += 1)
+    });
+
+    view! {
+
+        <section class="md:aspect-video w-full p-8 flex flex-col gap-4 prose prose-slate md:prose-xl lg:prose-2xl max-w-none"
+
+            use:animate=(In::default()
+            .source("opacity-0")
+            .active("duration-150")
+            .target("opacity-100"),
+            Out::default()
+            .source("opacity-100")
+            .active("duration-150")
+            .target("opacity-0")
+            )
+                >
+            <h1>{title}</h1>
             <div class="text-base">{children()}</div>
         </section>
     }
 }
 
 #[component]
-pub fn SlideDeck() -> impl IntoView {
+fn Appear(#[prop(into, default = 0)] id: u8, children: Children) -> impl IntoView {
+    let step: RwSignal<u8> = expect_context();
+    let show = move || {
+        if step.get() >= id {
+            "transition-all duration-300 opacity-100 translate-y-0"
+        } else {
+            "transition-all duration-300 opacity-0 translate-y-2"
+        }
+    };
+    use leptos::html::*;
+    div().class(show).child(children())
+}
+
+#[component]
+fn SlideDeck() -> impl IntoView {
     let current = RwSignal::new(0_u32);
+    provide_context(current);
 
     let slides: Vec<AnyView> = {
         let c = current;
 
         vec![
+            view! {<Show when=move || c.get() == 0><Initial/></Show>}.into_any(),
+            view! {<Show when=move || c.get() == 1><AboutMe/></Show>}.into_any(),
+            view! {<Show when=move || c.get() == 2><ViewMacro/></Show>}.into_any(),
+            view! {<Show when=move || c.get() == 3><AiBots/></Show>}.into_any(),
             view! {
-                <Show when=move || c.get() == 0>
-                    <Slide title="Intro">
-                        <p>"What PLAI is about."</p>
-                    </Slide>
-                </Show>
-            }
-            .into_any(),
-            view! {
-                <Show when=move || c.get() == 1>
+                <Show when=move || c.get() == 4>
                     <Slide title="How it works">
                         <ul class="list-disc pl-5 space-y-1">
                             <li>"Draw cards"</li>
@@ -64,7 +92,7 @@ pub fn SlideDeck() -> impl IntoView {
             }
             .into_any(),
             view! {
-                <Show when=move || c.get() == 2>
+                <Show when=move || c.get() == 5>
                     <Slide title="Call to action">
                         <p>"Tell people how to get PLAI or join the community."</p>
                     </Slide>
@@ -107,7 +135,7 @@ pub fn SlideDeck() -> impl IntoView {
         prev_slide();
     });
 
-    use_hotkeys!(("arrowdown,arrowright,l,j") => move |_| {
+    use_hotkeys!(("arrowright,l") => move |_| {
         next_slide();
     });
 
@@ -117,10 +145,9 @@ pub fn SlideDeck() -> impl IntoView {
                 <ProgressBar stats=stats />
             </header>
 
-            <main class="flex-1 flex items-center justify-center">
+            <main class="flex-1 flex items-center justify-center relative overflow-x-hidden md:overflow-hidden">
                 <div
                     class="w-full max-w-5xl"
-
                     use:animate=Flip::watch(current)
                 >
                     {slides_view}
@@ -130,7 +157,7 @@ pub fn SlideDeck() -> impl IntoView {
             <footer class="border-t border-slate-800">
                 <div class="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between text-sm items-stretch text-slate-600">
                     <span class="font-semibold ">"Leptos full stack - Rust BCN"</span>
-                    <span class="">"2025 - "<a href="https://8vi.cat">martsec - 8vi.cat</a></span>
+                    <span class="">"2025 - "<a target="_blank" href="https://8vi.cat">martsec - 8vi.cat</a></span>
                     <span class="font-mono text-xs">
                         {move || format!("{}/{}", current.get() + 1, total)}
                     </span>

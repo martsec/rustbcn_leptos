@@ -19,9 +19,11 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                 <AutoReload options=options.clone() />
                 <HydrationScripts options />
                 <MetaTags />
+            <link href="prism.css" rel="stylesheet" />
             </head>
             <body>
                 <App />
+            <script src="prism.js"></script>
             </body>
         </html>
     }
@@ -41,12 +43,12 @@ pub fn App() -> impl IntoView {
         <Stylesheet id="leptos" href="/pkg/rustbcn_leptos.css" />
 
         // sets the document title
-        <Title text="Full stack with Leptos - 🦀 Barcelona" />
+        <Title text="🦀 Full stack: Leptos - 🦀 Barcelona" />
 
         // content for this welcome page
         <Router>
             <main node_ref=main_ref>
-                <Routes fallback=|| "Page not found.".into_view()>
+                <Routes fallback=|| view!{<h1>"Page not found"</h1>}>
                     <Route path=StaticSegment("") view=HomePage />
                     <Route path=StaticSegment("slides") view=SlidesPage />
                 </Routes>
