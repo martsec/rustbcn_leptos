@@ -1,5 +1,5 @@
-use crate::components::ProgressBar;
-use crate::{server_fns::SlideStatistics, slides::SlidesPage};
+use crate::home::HomePage;
+use crate::slides::SlidesPage;
 use leptos::prelude::*;
 use leptos_hotkeys::{provide_hotkeys_context, scopes, HotkeysContext};
 use leptos_meta::{provide_meta_context, MetaTags, Stylesheet, Title};
@@ -8,6 +8,7 @@ use leptos_router::{
     StaticSegment,
 };
 use leptos_ws::provide_websocket;
+use singlestage::ThemeProvider;
 
 pub fn shell(options: LeptosOptions) -> impl IntoView {
     view! {
@@ -19,11 +20,11 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                 <AutoReload options=options.clone() />
                 <HydrationScripts options />
                 <MetaTags />
-            <link href="prism.css" rel="stylesheet" />
+                <link href="prism.css" rel="stylesheet" />
             </head>
             <body>
                 <App />
-            <script src="prism.js"></script>
+                <script src="prism.js"></script>
             </body>
         </html>
     }
@@ -46,45 +47,15 @@ pub fn App() -> impl IntoView {
         <Title text="🦀 Full stack: Leptos - 🦀 Barcelona" />
 
         // content for this welcome page
-        <Router>
-            <main node_ref=main_ref>
-                <Routes fallback=|| view!{<h1>"Page not found"</h1>}>
-                    <Route path=StaticSegment("") view=HomePage />
-                    <Route path=StaticSegment("slides") view=SlidesPage />
-                </Routes>
-            </main>
-        </Router>
-    }
-}
-
-/// Renders the home page of your application.
-#[component]
-fn HomePageOld() -> impl IntoView {
-    // Creates a reactive value to update the button
-    let count = RwSignal::new(0);
-    let on_click = move |_| *count.write() += 1;
-
-    view! {
-        <h1>"Welcome to Leptos!"</h1>
-        <button on:click=on_click>"Click Me: " {count}</button>
-    }
-}
-
-/// Renders the home page of your application.
-#[component]
-fn HomePage() -> impl IntoView {
-    let slide_stats =
-        leptos_ws::ReadOnlySignal::new("slidestats", SlideStatistics::default()).unwrap();
-
-    let cloned = slide_stats.clone();
-    view! {
-        <div class="min-h-screen max-h-screen flex flex-col">
-            <header>
-                <ProgressBar stats=move || slide_stats.get() />
-            </header>
-            <h1 class="text-2xl">"Welcome to Leptos!"</h1>
-            <p>Our slidedeck is in page {move || cloned.get().current + 1}</p>
-
-        </div>
+        <ThemeProvider>
+            <Router>
+                <main node_ref=main_ref>
+                    <Routes fallback=|| view! { <h1>"Page not found"</h1> }>
+                        <Route path=StaticSegment("") view=HomePage />
+                        <Route path=StaticSegment("slides") view=SlidesPage />
+                    </Routes>
+                </main>
+            </Router>
+        </ThemeProvider>
     }
 }

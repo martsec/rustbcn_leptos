@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use leptos::prelude::*;
 use leptos::task::spawn_local;
 use leptos_animate::animate;
@@ -6,9 +8,9 @@ use leptos_animate::animations::flip::Flip;
 use leptos_hotkeys::use_hotkeys;
 
 use crate::components::ProgressBar;
-use crate::server_fns::update_slides;
-use crate::server_fns::SlideStatistics;
-use crate::slides::a_intro::{AboutMe, Initial};
+use crate::server_fns::{update_slides, ANSWERS_SIGNAL};
+use crate::server_fns::{AnsweredQuestion, SlideStatistics};
+use crate::slides::a_intro::{AboutMe, AboutYou, Initial, WhatIsAbout};
 use crate::slides::b_leptos::ViewMacro;
 use crate::slides::d_final::AiBots;
 
@@ -19,6 +21,10 @@ mod d_final;
 
 #[component]
 pub fn SlidesPage() -> impl IntoView {
+    // We need to init the channels we are going to read from
+    let default: HashMap<String, AnsweredQuestion> = HashMap::new();
+    let answer = leptos_ws::ReadOnlySignal::new(ANSWERS_SIGNAL, default).unwrap();
+
     view! { <SlideDeck /> }
 }
 
@@ -32,19 +38,14 @@ fn Slide(title: &'static str, children: Children) -> impl IntoView {
     });
 
     view! {
+        <section
+            class="md:aspect-video w-full p-8 flex flex-col gap-4 prose prose-slate md:prose-xl lg:prose-2xl max-w-none"
 
-        <section class="md:aspect-video w-full p-8 flex flex-col gap-4 prose prose-slate md:prose-xl lg:prose-2xl max-w-none"
-
-            use:animate=(In::default()
-            .source("opacity-0")
-            .active("duration-150")
-            .target("opacity-100"),
-            Out::default()
-            .source("opacity-100")
-            .active("duration-150")
-            .target("opacity-0")
+            use:animate=(
+                In::default().source("opacity-0").active("duration-150").target("opacity-100"),
+                Out::default().source("opacity-100").active("duration-150").target("opacity-0"),
             )
-                >
+        >
             <h1>{title}</h1>
             <div class="text-base">{children()}</div>
         </section>
@@ -56,13 +57,18 @@ fn Appear(#[prop(into, default = 0)] id: u8, children: Children) -> impl IntoVie
     let step: RwSignal<u8> = expect_context();
     let show = move || {
         if step.get() >= id {
-            "transition-all duration-300 opacity-100 translate-y-0"
+            "transition-all duration-300 overflow-hidden opacity-100 translate-y-0 scale-y-100 origin-top"
         } else {
-            "transition-all duration-300 opacity-0 translate-y-2"
+            "transition-all duration-300 overflow-hidden opacity-0 translate-y-2 scale-y-0 origin-top"
         }
     };
     use leptos::html::*;
     div().class(show).child(children())
+}
+#[component]
+fn Replace(#[prop(into, default = 0)] id: u8, children: ChildrenFn) -> impl IntoView {
+    let step: RwSignal<u8> = expect_context();
+    view! { <Show when=move || step.get() == id>{children()}</Show> }
 }
 
 #[component]
@@ -76,10 +82,12 @@ fn SlideDeck() -> impl IntoView {
         vec![
             view! {<Show when=move || c.get() == 0><Initial/></Show>}.into_any(),
             view! {<Show when=move || c.get() == 1><AboutMe/></Show>}.into_any(),
-            view! {<Show when=move || c.get() == 2><ViewMacro/></Show>}.into_any(),
-            view! {<Show when=move || c.get() == 3><AiBots/></Show>}.into_any(),
+            view! {<Show when=move || c.get() == 2><AboutYou/></Show>}.into_any(),
+            view! {<Show when=move || c.get() == 3><WhatIsAbout/></Show>}.into_any(),
+            view! {<Show when=move || c.get() == 4><ViewMacro/></Show>}.into_any(),
+            view! {<Show when=move || c.get() == 5><AiBots/></Show>}.into_any(),
             view! {
-                <Show when=move || c.get() == 4>
+                <Show when=move || c.get() == 6>
                     <Slide title="How it works">
                         <ul class="list-disc pl-5 space-y-1">
                             <li>"Draw cards"</li>
@@ -92,7 +100,7 @@ fn SlideDeck() -> impl IntoView {
             }
             .into_any(),
             view! {
-                <Show when=move || c.get() == 5>
+                <Show when=move || c.get() == 7>
                     <Slide title="Call to action">
                         <p>"Tell people how to get PLAI or join the community."</p>
                     </Slide>
@@ -146,10 +154,7 @@ fn SlideDeck() -> impl IntoView {
             </header>
 
             <main class="flex-1 flex items-center justify-center relative overflow-x-hidden md:overflow-hidden">
-                <div
-                    class="w-full max-w-5xl"
-                    use:animate=Flip::watch(current)
-                >
+                <div class="w-full max-w-5xl" use:animate=Flip::watch(current)>
                     {slides_view}
                 </div>
             </main>
@@ -157,7 +162,11 @@ fn SlideDeck() -> impl IntoView {
             <footer class="border-t border-slate-800">
                 <div class="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between text-sm items-stretch text-slate-600">
                     <span class="font-semibold ">"Leptos full stack - Rust BCN"</span>
-                    <span class="">"2025 - "<a target="_blank" href="https://8vi.cat">martsec - 8vi.cat</a></span>
+                    <span class="">
+                        "2025 - "<a target="_blank" href="https://8vi.cat">
+                            martsec - 8vi.cat
+                        </a>
+                    </span>
                     <span class="font-mono text-xs">
                         {move || format!("{}/{}", current.get() + 1, total)}
                     </span>

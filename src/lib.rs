@@ -1,5 +1,6 @@
 pub mod app;
 mod components;
+mod home;
 mod server_fns;
 mod slides;
 
