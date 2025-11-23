@@ -10,9 +10,10 @@ use leptos_hotkeys::use_hotkeys;
 use crate::components::ProgressBar;
 use crate::server_fns::{update_slides, ANSWERS_SIGNAL};
 use crate::server_fns::{AnsweredQuestion, SlideStatistics};
-use crate::slides::a_intro::{AboutMe, AboutYou, Initial, WhatIsAbout};
-use crate::slides::b_leptos::ViewMacro;
-use crate::slides::d_final::AiBots;
+use crate::slides::a_intro::*;
+use crate::slides::b_leptos::*;
+use crate::slides::c_ecosystem::*;
+use crate::slides::d_final::*;
 
 mod a_intro;
 mod b_leptos;
@@ -23,18 +24,26 @@ mod d_final;
 pub fn SlidesPage() -> impl IntoView {
     // We need to init the channels we are going to read from
     let default: HashMap<String, AnsweredQuestion> = HashMap::new();
-    let answer = leptos_ws::ReadOnlySignal::new(ANSWERS_SIGNAL, default).unwrap();
+    let _ = leptos_ws::ReadOnlySignal::new(ANSWERS_SIGNAL, default).unwrap();
 
     view! { <SlideDeck /> }
 }
 
 #[component]
-fn Slide(title: &'static str, children: Children) -> impl IntoView {
+fn Slide(
+    title: &'static str,
+    #[prop(default = "")] notes: &'static str,
+    children: Children,
+) -> impl IntoView {
     let step = RwSignal::new(0_u8);
     provide_context(step);
 
     use_hotkeys!(("arrowdown,j") => move |_| {
         step.update(|s| *s += 1)
+    });
+
+    use_hotkeys!(("arrowup,k") => move |_| {
+        step.update(|s| if *s > 0 {*s -= 1})
     });
 
     view! {
@@ -57,9 +66,9 @@ fn Appear(#[prop(into, default = 0)] id: u8, children: Children) -> impl IntoVie
     let step: RwSignal<u8> = expect_context();
     let show = move || {
         if step.get() >= id {
-            "transition-all duration-300 overflow-hidden opacity-100 translate-y-0 scale-y-100 origin-top"
+            "transition-all duration-300 overflow-hidden opacity-100 translate-y-0 scale-y-100 origin-top max-h-[1000px]"
         } else {
-            "transition-all duration-300 overflow-hidden opacity-0 translate-y-2 scale-y-0 origin-top"
+            "transition-[max-height,opacity] duration-300 overflow-hidden opacity-0 translate-y-2 scale-y-0 origin-top max-h-0"
         }
     };
     use leptos::html::*;
@@ -71,44 +80,64 @@ fn Replace(#[prop(into, default = 0)] id: u8, children: ChildrenFn) -> impl Into
     view! { <Show when=move || step.get() == id>{children()}</Show> }
 }
 
+#[allow(unused_assignments)]
+#[macro_export]
+macro_rules! slides {
+    ($current:expr, $( $comp:ident ),+ $(,)?) => {{
+        use leptos::prelude::*;
+
+        let c = $current;
+        #[allow(unused_mut, unused, unused_assignments)]
+        let mut idx: u32 = 0;
+        let mut out: Vec<AnyView> = Vec::new();
+
+        $(
+         let this_idx = idx;
+            out.push(
+                view! {
+                    <Show when=move || c.get() == this_idx>
+                        <$comp/>
+                    </Show>
+                }
+                .into_any()
+            );
+            idx += 1;
+        )*
+
+        out
+    }};
+}
+
 #[component]
 fn SlideDeck() -> impl IntoView {
     let current = RwSignal::new(0_u32);
     provide_context(current);
 
-    let slides: Vec<AnyView> = {
-        let c = current;
-
-        vec![
-            view! {<Show when=move || c.get() == 0><Initial/></Show>}.into_any(),
-            view! {<Show when=move || c.get() == 1><AboutMe/></Show>}.into_any(),
-            view! {<Show when=move || c.get() == 2><AboutYou/></Show>}.into_any(),
-            view! {<Show when=move || c.get() == 3><WhatIsAbout/></Show>}.into_any(),
-            view! {<Show when=move || c.get() == 4><ViewMacro/></Show>}.into_any(),
-            view! {<Show when=move || c.get() == 5><AiBots/></Show>}.into_any(),
-            view! {
-                <Show when=move || c.get() == 6>
-                    <Slide title="How it works">
-                        <ul class="list-disc pl-5 space-y-1">
-                            <li>"Draw cards"</li>
-                            <li>"Explain tech concepts"</li>
-                            <li>"Score with the team"</li>
-                        </ul>
-
-                    </Slide>
-                </Show>
-            }
-            .into_any(),
-            view! {
-                <Show when=move || c.get() == 7>
-                    <Slide title="Call to action">
-                        <p>"Tell people how to get PLAI or join the community."</p>
-                    </Slide>
-                </Show>
-            }
-            .into_any(),
-        ]
-    };
+    let slides = slides!(
+        current,
+        Initial,
+        AboutMe,
+        AboutYou,
+        WhatIsAbout,
+        MpaSpa,
+        // 2Leptos
+        UiComponent,
+        ViewMacro,
+        Reactivity,
+        Contexts,
+        Stores,
+        Server,
+        Server2,
+        // 3. Ecosystem
+        LeptosUse,
+        LeptosWebsockets,
+        Extra,
+        // Final
+        AiBots,
+        Overall,
+        QuestionsAndCredits,
+        Resources,
+    );
 
     let total = slides.len() as u32;
     let stats = move || SlideStatistics {
@@ -122,8 +151,6 @@ fn SlideDeck() -> impl IntoView {
             update_slides(s).await.unwrap();
         });
     });
-
-    let slides_view = slides.into_iter().collect_view();
 
     let next_slide = move || {
         current.update(|i| {
@@ -139,7 +166,7 @@ fn SlideDeck() -> impl IntoView {
             }
         });
     };
-    use_hotkeys!(("arrowup,arrowleft,h,k") => move |_| {
+    use_hotkeys!(("arrowleft,h") => move |_| {
         prev_slide();
     });
 
@@ -155,7 +182,7 @@ fn SlideDeck() -> impl IntoView {
 
             <main class="flex-1 flex items-center justify-center relative overflow-x-hidden md:overflow-hidden">
                 <div class="w-full max-w-5xl" use:animate=Flip::watch(current)>
-                    {slides_view}
+                    {slides}
                 </div>
             </main>
 

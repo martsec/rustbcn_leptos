@@ -1,10 +1,9 @@
 use leptos::prelude::*;
-use leptos::task::spawn_local;
+use singlestage::icon;
 use singlestage::*;
-use singlestage::{alert::*, icon};
 
-use crate::components::QuestionBlock;
-use crate::server_fns::{send_question, Question};
+use crate::components::{BkgImg, QuestionBlock};
+use crate::server_fns::Question;
 use crate::slides::{Appear, Replace, Slide};
 
 #[component]
@@ -95,6 +94,10 @@ pub fn AboutYou() -> impl IntoView {
         // - And with frontend?
         // - And Full stack?
         </Slide>
+            <BkgImg
+                img="10XEngineer"
+                alt="it's you, a 10x engineer"
+            />
     }
 }
 
@@ -103,8 +106,21 @@ pub fn WhatIsAbout() -> impl IntoView {
     let count = RwSignal::new(0);
     let on_click = move |_| *count.write() += 1;
 
+    let theme_context = expect_context::<ThemeProviderContext>();
+    Effect::new(move || {
+        if count.get() > 15 {
+            theme_context.mode.set(
+                match count.get() % 2 {
+                    0 => "light",
+                    _ => "dark",
+                }
+                .into(),
+            );
+        }
+    });
     view! {
         <Slide title="What are we going to see?">
+            <Appear id=1>
             <Button size="large" variant="normal" on:click=on_click>
                 "Click Me: "
                 {count}
@@ -125,6 +141,47 @@ pub fn WhatIsAbout() -> impl IntoView {
                         <AlertDescription>"Nothing else will happen. Trust me"</AlertDescription>
                     </Alert>
                 </Show>
+            </div>
+            </Appear>
+            <Appear id=2>
+                    <Alert class="not-prose">
+                        {icon!(icondata::ImEye)}
+                        <AlertTitle>"Interactive web apps"</AlertTitle>
+                        <AlertDescription>"With HTML sent from the server"</AlertDescription>
+                    </Alert>
+            </Appear>
+        </Slide>
+    }
+}
+
+#[component]
+pub fn MpaSpa() -> impl IntoView {
+    let images = [
+        "/1-mpa.png",
+        "/2-mpa-jquery.png",
+        "/3-spa.png",
+        "/4-spa-server.png",
+        "/5-wasm.png",
+    ];
+
+    view! {
+        <Slide title="MPA to SPA">
+            <div class="h-[50vh] flex items-center justify-center">
+                {images
+                    .into_iter()
+                    .enumerate()
+                    .map(|(id, src)| {
+                        view! {
+                            <Replace id=id as u8>
+                                <img
+                                    class="max-h-full w-auto object-contain"
+                                    src=src
+                                />
+                            </Replace>
+                        }
+                    })
+                    .collect_view()
+                }
             </div>
         </Slide>
     }

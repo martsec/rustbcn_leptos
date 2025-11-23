@@ -13,7 +13,7 @@ use crate::server_fns::{register_user, Question, SlideStatistics, QUESTION_SIGNA
 pub fn HomePage() -> impl IntoView {
     let slide_stats =
         leptos_ws::ReadOnlySignal::new("slidestats", SlideStatistics::default()).unwrap();
-    let question = leptos_ws::ReadOnlySignal::new(
+    let _ = leptos_ws::ReadOnlySignal::new(
         QUESTION_SIGNAL,
         Question {
             text: String::new(),

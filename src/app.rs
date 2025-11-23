@@ -12,22 +12,26 @@ use singlestage::ThemeProvider;
 
 pub fn shell(options: LeptosOptions) -> impl IntoView {
     view! {
-        <!DOCTYPE html>
-        <html lang="en">
-            <head>
-                <meta charset="utf-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <AutoReload options=options.clone() />
-                <HydrationScripts options />
-                <MetaTags />
-                <link href="prism.css" rel="stylesheet" />
-            </head>
-            <body>
-                <App />
-                <script src="prism.js"></script>
-            </body>
-        </html>
-    }
+              <!DOCTYPE html>
+              <html lang="en">
+                  <head>
+                      <meta charset="utf-8" />
+                      <meta name="viewport" content="width=device-width, initial-scale=1" />
+                      <AutoReload options=options.clone() />
+                      <HydrationScripts options />
+                      <MetaTags />
+                      <link href="prism.css" rel="stylesheet" />
+                <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+                  </head>
+                  <body>
+                      <App />
+                      <script defer src="prism.js"></script>
+                  </body>
+              </html>
+          }
 }
 
 #[component]

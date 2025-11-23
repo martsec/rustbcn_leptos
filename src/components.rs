@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::server_fns::{
-    send_question, AnsweredQuestion, Question, SlideStatistics, ANSWERS_SIGNAL, QUESTION_SIGNAL,
+    send_question, AnsweredQuestion, Question, SlideStatistics, ANSWERS_SIGNAL,
 };
 use leptos::{prelude::*, task::spawn_local};
 
@@ -119,5 +119,23 @@ pub fn AnswerPlot(answers: Memo<AnsweredQuestion>) -> impl IntoView {
                 }
             />
         </div>
+    }
+}
+
+#[component]
+pub fn Code(
+    #[prop(into)] code: String,
+    #[prop(into, default = "rust".to_string())] lang: String,
+) -> impl IntoView {
+    view! {
+                <div class="relative my-4 not-prose">
+                    <pre class="rounded-lg p-4 font-mono text-sm bg-orange-50 overflow-x-auto">
+                        <code class=format!("language-{lang}")>{code}</code>
+                    </pre>
+                    <div class="absolute top-2 right-2 bg-gray-900 px-2 py-1 rounded text-gray-200 text-sm ">
+            {lang}
+                    </div>
+                </div>
+
     }
 }

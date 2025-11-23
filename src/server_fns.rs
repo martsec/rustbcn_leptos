@@ -17,6 +17,7 @@ pub async fn update_slides(stats: SlideStatistics) -> Result<(), ServerFnError> 
     Ok(())
 }
 
+#[allow(unused)]
 static USERS: Lazy<RwLock<HashMap<String, DateTime<Utc>>>> =
     Lazy::new(|| RwLock::new(HashMap::new()));
 
@@ -78,6 +79,7 @@ impl AnsweredQuestion {
     }
 }
 
+#[allow(unused)]
 static ANSWERS: Lazy<RwLock<HashMap<String, AnsweredQuestion>>> =
     Lazy::new(|| RwLock::new(HashMap::new()));
 #[server]

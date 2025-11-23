@@ -4,16 +4,6 @@ use crate::components::BkgImg;
 use crate::slides::{Appear, Slide};
 
 #[component]
-pub fn LeptosMobile() -> impl IntoView {
-    view! {
-        <Slide title="Beyond web">
-            // TODO:
-            <p>Tauri</p>
-
-        </Slide>
-    }
-}
-#[component]
 pub fn AiBots() -> impl IntoView {
     view! {
         <Slide title="What about LLMs creating code?">
@@ -57,5 +47,49 @@ pub fn Overall() -> impl IntoView {
             </ul>
 
         </Slide>
+    }
+}
+
+#[component]
+pub fn QuestionsAndCredits() -> impl IntoView {
+    view! {
+        <Slide title="Questions?">
+
+
+        <p>"Credits and thanks"</p>
+            <ul class="list-disc pl-5 space-y-1">
+
+        <li><a href="https://github.com/gbj" target="_blank">"Greg Johnston"</a>" for creating "<a href="https://www.leptos.dev/" target="_blank">leptos</a></li>
+            <li><a target="_blank" href="https://singlestage.doordesk.net/">"Singlestage UI"</a></li>
+            <li><a target="_blank" href="">""</a></li>
+        <li>"TimTom for "<a href="https://github.com/TimTom2016/leptos_ws" target="_blank">"leptos_ws"</a> </li>
+        <li>"gaucho-labs for "<a href="https://github.com/gaucho-labs/leptos-hotkeys" target="_blank">"leptos-hotkeys"</a></li>
+        <li>"Background images by "<a href="https://plai.cards" target="_blank">PLAI</a></li>
+            </ul>
+
+        </Slide>
+
+    }
+}
+
+#[component]
+pub fn Resources() -> impl IntoView {
+    let title = "Resources";
+    let notes = r#""#;
+    view! {
+      <Slide title=title notes=notes>
+        <div/>
+        <ul class="list-disc pl-5 space-y-1">
+            <li><a target="_blank" href="https://book.leptos.dev/">"Leptos Book"</a></li>
+            <li><a target="_blank" href="https://github.com/leptos-rs/awesome-leptos">"Awesome Leptos"</a></li>
+            <li><a target="_blank" href="https://www.youtube.com/@leptos-dev">"Leptos Youtube channel"</a></li>
+            <li><a target="_blank" href="https://www.youtube.com/watch?v=V1cqQRmVAK0">"The Future of Rust Web Applications - Greg Johnston"</a></li>
+            <li><a target="_blank" href="https://www.youtube.com/watch?v=4KtotxNAwME">"The Truth about Rust/WebAssembly Performance"</a></li>
+            <li><a target="_blank" href="https://krausest.github.io/js-framework-benchmark/">"js web frameworks benchmark"</a></li>
+            <li><a target="_blank" href="https://www.youtube.com/watch?v=vAjle3c9Xqc">"Build A Full Stack Chatbot in Rust (feat. Leptos & Rustformers)"</a></li>
+            //<li><a target="_blank" href="">""</a></li>
+
+        </ul>
+      </Slide>
     }
 }
