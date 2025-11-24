@@ -127,15 +127,41 @@ pub fn Code(
     #[prop(into)] code: String,
     #[prop(into, default = "rust".to_string())] lang: String,
 ) -> impl IntoView {
+    #[cfg(target_arch = "wasm32")]
+    {
+        use crate::prism::highlight;
+        Effect::new(move |_| {
+            highlight();
+        });
+    }
     view! {
-                <div class="relative my-4 not-prose">
-                    <pre class="rounded-lg p-4 font-mono text-sm bg-orange-50 overflow-x-auto">
-                        <code class=format!("language-{lang}")>{code}</code>
-                    </pre>
-                    <div class="absolute top-2 right-2 bg-gray-900 px-2 py-1 rounded text-gray-200 text-sm ">
-            {lang}
-                    </div>
-                </div>
+        <div class="relative my-4 not-prose">
+            <pre class="rounded-lg p-4 font-mono text-sm overflow-x-auto">
+                <code class=format!("language-{lang}")>{code}</code>
+            </pre>
+            <div class="absolute top-2 right-2 bg-gray-900 px-2 py-1 rounded text-gray-200 text-sm ">
+                {lang}
+            </div>
+        </div>
+    }
+}
 
+#[component]
+pub fn Mermaid(
+    #[prop(into)] code: &'static str,
+    #[prop(into, default = "")] class: &'static str,
+) -> impl IntoView {
+    #[cfg(target_arch = "wasm32")]
+    {
+        use crate::mermaid::rerender_all;
+        Effect::new(move |_| {
+            rerender_all();
+        });
+    }
+
+    view! {
+        <pre class=format!(
+            "mermaid bg-orange-50 flex justify-center {class}",
+        )>{format!("{code}\n%%")}</pre>
     }
 }

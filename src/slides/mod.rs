@@ -129,10 +129,13 @@ fn SlideDeck() -> impl IntoView {
         Server,
         Server2,
         // 3. Ecosystem
+        EcosystemSection,
         LeptosUse,
         LeptosWebsockets,
         Extra,
         // Final
+        FinalSection,
+        GoodAndBad,
         AiBots,
         Overall,
         QuestionsAndCredits,

@@ -2,25 +2,27 @@ use leptos::prelude::*;
 use singlestage::icon;
 use singlestage::*;
 
-use crate::components::{BkgImg, QuestionBlock};
+use crate::components::{BkgImg, Mermaid, QuestionBlock};
 use crate::server_fns::Question;
 use crate::slides::{Appear, Replace, Slide};
 
 #[component]
 pub fn Initial() -> impl IntoView {
     view! {
-        <Slide title="Intro">
-            <Appear id=1>
-                <p>"What PLAI is about."</p>
-            </Appear>
+        <Slide title="">
 
-            <Appear id=2>
-                <p>"Pray the demo gods"</p>
-            </Appear>
-            <Appear id=3>
-                <p>"Because this is actually a demo"</p>
-            </Appear>
+            <h1 class="not-prose text-4xl md:text-9xl font-extrabold tracking-tight text-slate-900">
+                Leptos:
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-pink-500">
+                    Rust Full-Stack
+                </span>
+            </h1>
+
+            <p class="text-slate-400 italic">
+                "Pray the demo gods because this is actually a demo"
+            </p>
         </Slide>
+        <BkgImg img="Hype" alt="" />
     }
 }
 #[component]
@@ -55,11 +57,13 @@ pub fn AboutMe() -> impl IntoView {
                         <p>"Fake open source"</p>
                         <Appear id=5>
                             <p>"Javascript & environment"</p>
+
                         </Appear>
                     </div>
                 </div>
             </Appear>
         </Slide>
+        <BkgImg img="Privacy" alt="" />
     }
 }
 
@@ -94,10 +98,7 @@ pub fn AboutYou() -> impl IntoView {
         // - And with frontend?
         // - And Full stack?
         </Slide>
-            <BkgImg
-                img="10XEngineer"
-                alt="it's you, a 10x engineer"
-            />
+        <BkgImg img="10XEngineer" alt="it's you, a 10x engineer" />
     }
 }
 
@@ -121,34 +122,44 @@ pub fn WhatIsAbout() -> impl IntoView {
     view! {
         <Slide title="What are we going to see?">
             <Appear id=1>
-            <Button size="large" variant="normal" on:click=on_click>
-                "Click Me: "
-                {count}
-            </Button>
-            <div class="my-10 max-w-200">
-                <Show when=move || { count.get() >= 5 && count.get() < 10 }>
-                    <Alert class="not-prose">
-                        {icon!(icondata::LuCircleCheck)}
-                        <AlertTitle>"Success! You have tested Reactivity"</AlertTitle>
-                        <AlertDescription>"You can stop clicking now"</AlertDescription>
-                    </Alert>
-                </Show>
-                <Show when=move || { count.get() >= 10 }>
+                <Button size="large" variant="normal" on:click=on_click>
+                    "Click Me: "
+                    {count}
+                </Button>
+                <div class="my-10 mx-auto max-w-100">
+                    <Show when=move || { count.get() >= 5 && count.get() < 10 }>
+                        <Alert class="not-prose">
+                            {icon!(icondata::LuCircleCheck)}
+                            <AlertTitle>"Success! You have tested Reactivity"</AlertTitle>
+                            <AlertDescription>"You can stop clicking now"</AlertDescription>
+                        </Alert>
+                    </Show>
+                    <Show when=move || { count.get() >= 10 }>
 
-                    <Alert variant="destructive" class="not-prose">
-                        {icon!(icondata::FiAlertCircle)}
-                        <AlertTitle>"That is enough!"</AlertTitle>
-                        <AlertDescription>"Nothing else will happen. Trust me"</AlertDescription>
-                    </Alert>
-                </Show>
-            </div>
+                        <Alert variant="destructive" class="not-prose">
+                            {icon!(icondata::FiAlertCircle)}
+                            <AlertTitle>"That is enough!"</AlertTitle>
+                            <AlertDescription>
+                                "Nothing else will happen. Trust me"
+                            </AlertDescription>
+                        </Alert>
+                    </Show>
+
+                </div>
             </Appear>
             <Appear id=2>
-                    <Alert class="not-prose">
-                        {icon!(icondata::ImEye)}
-                        <AlertTitle>"Interactive web apps"</AlertTitle>
-                        <AlertDescription>"With HTML sent from the server"</AlertDescription>
-                    </Alert>
+                <QuestionBlock q=Question {
+                    text: "Impessive, right?".into(),
+                    answers: vec![
+                        "Yeah!".to_string(),
+                        "Ecstatic".to_string(),
+                        "Exhilarant".to_string(),
+                    ],
+                } />
+                <Alert class="not-prose">
+                    {icon!(icondata::ImEye)} <AlertTitle>"Interactive web apps"</AlertTitle>
+                    <AlertDescription>"With HTML sent from the server"</AlertDescription>
+                </Alert>
             </Appear>
         </Slide>
     }
@@ -156,7 +167,7 @@ pub fn WhatIsAbout() -> impl IntoView {
 
 #[component]
 pub fn MpaSpa() -> impl IntoView {
-    let images = [
+    let _images = [
         "/1-mpa.png",
         "/2-mpa-jquery.png",
         "/3-spa.png",
@@ -164,24 +175,83 @@ pub fn MpaSpa() -> impl IntoView {
         "/5-wasm.png",
     ];
 
+    let diagrams = [
+        r#"
+sequenceDiagram
+    participant Client
+    participant Server
+
+    Client->>Server: URL, link or form
+    Server->>Client: HTML, js, css
+"#,
+        r#"
+sequenceDiagram
+    participant Client
+    participant JS
+    participant Server
+
+    Client->>Server: URL, link or form
+    Server->>Client: HTML, JS, css
+    Client->>JS: User events
+    JS->>Client: DOM updates (animations, UI effects)
+"#,
+        r#"
+sequenceDiagram
+    participant Client
+    participant JS
+    participant Server
+
+    Server-->>Client: html, JS, css
+    Client->>JS: User events
+    JS->>Server: JSON
+    Server->>JS:
+    JS->>Client: DOM updates 
+"#,
+        r#"
+sequenceDiagram
+    participant Client
+    participant JS
+    participant Server as JAVASCRIPT Server
+
+    Server-->>Client: html, JS, css
+    Client->>JS: User events
+    JS->>Server: JSON
+    Server->>JS:
+    JS->>Client: DOM updates 
+"#,
+        r#"
+sequenceDiagram
+    participant Client
+    participant JS as WASM
+    participant Server
+
+    Server-->>Client: html, WASM, css
+    Client->>JS: User events
+    JS->>Server: JSON/serialized
+    Server->>JS:
+    JS->>Client: DOM updates
+"#,
+    ];
+
     view! {
         <Slide title="MPA to SPA">
             <div class="h-[50vh] flex items-center justify-center">
-                {images
+                // images
+                {diagrams
                     .into_iter()
                     .enumerate()
                     .map(|(id, src)| {
                         view! {
                             <Replace id=id as u8>
-                                <img
-                                    class="max-h-full w-auto object-contain"
-                                    src=src
-                                />
+                                // <img
+                                // class="max-h-full w-auto object-contain"
+                                // src=src
+                                // />
+                                <Mermaid code=src class="grow" />
                             </Replace>
                         }
                     })
-                    .collect_view()
-                }
+                    .collect_view()}
             </div>
         </Slide>
     }

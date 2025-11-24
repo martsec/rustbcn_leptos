@@ -1,7 +1,9 @@
 use crate::{
-    components::Code,
+    components::{Code, Mermaid},
     slides::{Appear, Replace, Slide},
 };
+
+use crate::components::BkgImg;
 use leptos::prelude::*;
 use singlestage::*;
 
@@ -21,23 +23,19 @@ fn App() -> impl IntoView {
     let (count, set_count) = Signal::new(0);
 
     view! {
-        <button
-            on:click=move |_| *set_count.write() += 1 
-        >
-            "Click me: "{count}
-        </button>
-        <p>
-            "Double count: "{move || count.get() * 2}
-        </p>
+        <button on:click=move |_| *set_count.write() += 1 >
+        "Click me: "{count}</button>
+        <p>"Double count: "{move || count.get() * 2}</p>
     }
 }"#;
     view! {
-      <Slide title=title notes=notes>
-        <p>Similar to HTML elements, they represent a section of the DOM</p>
-        <p> The body is a set-up function. Runs once</p>
-        <p>Views have JSX-like format</p>
-        <Code code=code />
-      </Slide>
+        <Slide title=title notes=notes>
+            <p>
+                Similar to HTML elements, views represent a section of the DOM. They are written in a JSX-like format.
+            </p>
+            <p>The body is a set-up function that runs once</p>
+            <Code code=code />
+        </Slide>
     }
 }
 
@@ -63,13 +61,48 @@ pub fn ViewMacro() -> impl IntoView {
         </Slide>
     }
 }"#;
+    let code_bad = r#"use crate::slides::{Appear, Slide};
+use leptos::prelude::*;
+
+#[component]
+pub fn ViewMacro() -> impl IntoView {
+    let code = "...";
     view! {
         <Slide title="Typecheck your HTML">
+            <p>"Let's apply recursion on this page" // We made a mistake!!!
+            <code>
+                {code}
+            </code>
+        </Slide>
+    }
+}"#;
+    let code_error = r#"error: wrong close tag found
+  --> src/slides/b_leptos.rs:86:9
+   |
+86 |         </Slide>
+   |         ^^^^^^^^
+   |
+help: open tag that should be closed; it's started here
+  --> src/slides/b_leptos.rs:83:13
+   |
+83 |             <p>"Let's apply recursion on this page"
+   |             ^^^"#;
+    view! {
+        <Slide title="Typecheck your HTML" notes=notes>
             <p>"Let's apply recursion on this page"</p>
-            <Code code=code/>
+            <Replace id=0>
+                <Code code=code_bad />
+            </Replace>
+            <Replace id=1>
+                <Code code=code_error />
+            </Replace>
+            <Replace id=2>
+                <Code code=code />
+            </Replace>
         </Slide>
     }
 }
+
 #[component]
 pub fn Reactivity() -> impl IntoView {
     let count = RwSignal::new(0);
@@ -81,7 +114,10 @@ pub fn Reactivity() -> impl IntoView {
     let on_click = move |_| *count.write() += 1;
     view! {
         <Slide title="What are we going to see?">
-            <Button size="large" variant="normal" on:click=on_click class:red=move || count.get() % 2 == 1>
+            <Button 
+                size="large" variant="normal" 
+                on:click=on_click 
+                class:bg-red-500=move || count.get() % 2 == 1>
                 "Click Me: "{count}
             </Button>
         </Slide>
@@ -89,38 +125,157 @@ pub fn Reactivity() -> impl IntoView {
 }"#;
 
     view! {
-        <Slide title="Reactivity">
+        <Slide title="Signals and Reactivity">
 
-        <p>Special syntax for listeners <code>r#"on:click"#</code> and dynamic attributes <code>r#"class:red=move || count.get() % 2 == 1"#</code></p>
-            <Button size="large" variant="normal" on:click=on_click class:red=move || count.get() % 2 == 1>
-                "Click Me: "{count}
+            <p>
+                "Signals are the "
+                <a
+                    target="_blank"
+                    href="https://book.leptos.dev/reactivity/working_with_signals.html"
+                >
+                    building block of reactivity
+                </a>.<br />"Every time they change, everything that reads from it reevaluates."
+            </p>
+
+            <p>
+                Special syntax for listeners <code>r#"on:click"#</code>and dynamic attributes
+                <code>r#"class:red=move || count.get() % 2 == 1"#</code>
+            </p>
+            <Button
+                size="large"
+                variant="normal"
+                on:click=on_click
+                class:bg-red-500=move || count.get() % 2 == 1
+            >
+                "Click Me: "
+                {count}
             </Button>
-            <Appear id=1><Code code=code/></Appear>
+            <Appear id=1>
+                <Code code=code />
+            </Appear>
         </Slide>
-
-
     }
 }
 
 #[component]
 pub fn Contexts() -> impl IntoView {
     let title = "Passing contexts";
-    let notes = r#""#;
+    let notes = r#"Communication from parents to childrens and vice-versa.
+
+    The child can send notificactions about state or events.
+    "#;
+    let diagram = r#"
+flowchart LR
+    App["App (root)
+provide_context(Theme)"]
+
+    Page["Page / Parent
+provide_context(User)"]
+
+    Child1["Child 1
+expect_context(User)"]
+
+    Child2["Child 2
+expect_context(User)"]
+
+    Grand["Grandchild
+expect_context(Theme)"]
+
+    %% component tree
+    App --> Page
+    Page --> Child1
+    Page --> Child2
+    Child2 --> Grand
+
+    %% Theme context from root
+    App -. "Theme ctx" .-> Page
+    App -. "Theme ctx" .-> Child1
+    App -. "Theme ctx" .-> Grand
+
+    %% User context from Page
+    Page -. "User ctx" .-> Child1
+    Page -. "User ctx" .-> Child2
+"#;
     view! {
-      <Slide title=title notes=notes>
-        <p>TODO</p>
-      </Slide>
+        <Slide title=title notes=notes>
+
+            <p>
+                "Instead of passing signals to components, set them as context. "
+                <code>"<Child2 user=user theme=theme/>"</code>
+            </p>
+            <Mermaid code=diagram class="max-h-150" />
+            <Appear id=1>
+                <code>provide_context(12_u8);</code>
+                and
+                <code>let n: u8 = expect_context();</code>
+                <p>
+                    <i>Bad</i>
+                    thing: contexts are identified only by its type.
+                    <i>Worst</i>
+                    thing:
+                    "Now it's"
+                    a
+                    <b>runtime check.</b>
+                </p>
+            </Appear>
+
+        </Slide>
     }
 }
 
 #[component]
 pub fn Stores() -> impl IntoView {
-    let title = "";
+    let title = "Reactive Stores";
     let notes = r#""#;
+    let definition = r#"#[derive(Store, Clone, ...)]
+pub struct Sale {
+    pub vt_begin: DateTime<Utc>,
+    pub vt_end: DateTime<Utc>,
+    pub id: u32,
+    pub client: Client,
+    pub num_units_sold: u8,
+    pub unit_price_with_vat: f64,
+    pub vat_type: VatType,
+    pub payment: PaymentPlatform,
+    pub shipping: Envio,
+    pub shipping_with_vat: f64,
+    pub shipping_number: String,
+    pub notes: String,
+    pub state: SaleState,
+}
+"#;
+    let usage = r#"#[component]
+pub fn SaleForm(
+    on_save: impl Fn(Sale) + 'static + Copy,
+) -> impl IntoView {
+    let state = expect_context::<Store<SalesState>>();
+    let submit_form = move |_| {on_save(sale.get());};
     view! {
-      <Slide title=title notes=notes>
-        <p>TODO</p>
-      </Slide>
+        <ClientInfoSection client=sale.client() />
+        <SimpleNumberInput
+            label="Units sold"
+            value=sale.num_units_sold() />
+        <button type="button"
+            on:click=submit_form
+            disabled=move || sale.has_errors().get() >
+            "Save sale"
+        </button>
+    }
+"#;
+    view! {
+        <BkgImg img="InternationalDataTransfer" alt="international data transfer" />
+        <Slide title=title notes=notes>
+            <p>
+                <code>struct</code>
+                +
+                <code>Signal</code>
+                for complex or global state.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 place-items-center">
+                <Code code=definition />
+                <Code code=usage />
+            </div>
+        </Slide>
     }
 }
 
@@ -154,17 +309,18 @@ pub async fn update_slides(stats: SlideStatistics) -> Result<(), ServerFnError> 
 "#;
 
     view! {
-      <Slide title=title notes=notes>
-                <Replace id=1>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 place-items-center">
-    <p class="text-xl">Axum</p>
-    <p class="text-xl">Actix</p>
-        </div>
-                </Replace>
-                <Appear id=3>klasjdlksjdslakd</Appear>
-                <Appear id=2><Code code=code/>
-                </Appear>
-      </Slide>
+        <Slide title=title notes=notes>
+            <Appear id=1>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 place-items-center">
+                    <p class="text-xl">Axum</p>
+                    <p class="text-xl">Actix</p>
+                </div>
+            </Appear>
+            <Appear id=3>"Serverside: It's just a function"</Appear>
+            <Appear id=2>
+                <Code code=code />
+            </Appear>
+        </Slide>
     }
 }
 #[component]
@@ -193,9 +349,9 @@ fn SlideDeck() -> impl IntoView {
 }"#;
 
     view! {
-      <Slide title=title notes=notes>
-        <p>"Call function from frontend. It's an API call!"</p>
-                <Code code=code/>
-      </Slide>
+        <Slide title=title notes=notes>
+            <p>"Call function from frontend. It's an API call!"</p>
+            <Code code=code />
+        </Slide>
     }
 }

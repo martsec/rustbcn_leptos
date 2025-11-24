@@ -1,6 +1,8 @@
 pub mod app;
 mod components;
 mod home;
+mod mermaid;
+mod prism;
 mod server_fns;
 mod slides;
 
