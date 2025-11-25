@@ -8,7 +8,6 @@ use crate::components::ProgressBar;
 use crate::server_fns::send_answer;
 use crate::server_fns::Answer;
 use crate::server_fns::{register_user, Question, SlideStatistics, QUESTION_SIGNAL};
-/// Renders the home page of your application.
 #[component]
 pub fn HomePage() -> impl IntoView {
     let slide_stats =
@@ -28,10 +27,22 @@ pub fn HomePage() -> impl IntoView {
             <header>
                 <ProgressBar stats=move || slide_stats.get() />
             </header>
-            <h1 class="text-2xl">"Welcome to Leptos!"</h1>
-            <p>Our slidedeck is in page {move || cloned.get().current}</p>
 
-            <QuizzArea />
+            <main class="flex-1 flex bg-gradient-to-b from-white to-slate-50">
+                <div class="mx-auto flex w-full max-w-5xl flex-col px-6 py-10 gap-8">
+                    <article class="prose prose-slate max-w-none">
+                        <h1>Welcome to Leptos</h1>
+                        <p>
+                            {"You are participating in a small interactive quiz powered by Leptos."}
+                        </p>
+                        <p>{"Current slide: "} {move || cloned.get().current}</p>
+                    </article>
+
+                    <div class="mt-2 flex-1 not-prose">
+                        <QuizzArea />
+                    </div>
+                </div>
+            </main>
 
         </div>
     }
@@ -49,25 +60,39 @@ pub fn QuizzArea() -> impl IntoView {
     };
 
     view! {
-        <Show
-            when=move || { loged_in.get() }
-            fallback=move || {
-                view! {
-                    <div class="gap-4 max-w-100">
-                        <Input input_type="text" value=username>
-                            "What's your name?"
-                        </Input>
+        <div class="flex h-full items-start md:items-center justify-center">
+            <Show
+                when=move || { loged_in.get() }
+                fallback=move || {
+                    view! {
+                        <div class="w-full max-w-md space-y-4">
+                            <div class="prose prose-slate">
+                                <h2>Join the quiz</h2>
+                            </div>
 
-                        <Button size="normal" variant="primary" on:click=log_in>
-                            "Join the quizz"
-                        </Button>
-                    </div>
+                            <div class="not-prose space-y-3">
+                                <Input input_type="text" value=username>
+                                    "What's your name?"
+                                </Input>
+
+                                <Button
+                                    size="normal"
+                                    variant="primary"
+                                    class="w-full justify-center"
+                                    on:click=log_in
+                                >
+                                    "Join the quiz"
+                                </Button>
+                            </div>
+                        </div>
+                    }
                 }
-            }
-        >
-            <QuestionArea username=username />
-
-        </Show>
+            >
+                <div class="w-full max-w-2xl space-y-6">
+                    <QuestionArea username=username />
+                </div>
+            </Show>
+        </div>
     }
 }
 
@@ -102,8 +127,10 @@ pub fn QuestionArea(username: RwSignal<String>) -> impl IntoView {
             when=move || q().is_initialized()
             fallback=move || {
                 view! {
-                    <h4>"Hello "{username}</h4>
-                    <p>"We are waiting for a quizz. Relax and just listen"</p>
+                    <article class="prose prose-slate">
+                        <h4>"Hello "{move || username()}</h4>
+                        <p>"We are waiting for a quizz. Relax and just listen"</p>
+                    </article>
                 }
             }
         >
@@ -127,16 +154,29 @@ pub fn QuestionArea(username: RwSignal<String>) -> impl IntoView {
                 });
 
                 view! {
-                    <h3>{title.clone()}</h3>
-                    <RadioGroup value=value>
-                        {answers
-                            .into_iter()
-                            .map(|a| {
-                                view! { <Radio value=a.clone()>{a.clone()}</Radio> }
-                            })
-                            .collect_view()}
+                    <div class="space-y-4">
+                        <article class="prose prose-slate">
+                            <h2>{title.clone()}</h2>
+                        </article>
 
-                    </RadioGroup>
+                        <div class="not-prose">
+                            <RadioGroup value=value class="space-y-2">
+                                {answers
+                                    .into_iter()
+                                    .map(|a| {
+                                        view! {
+                                            <Radio
+                                                class="block rounded-md border border-slate-200 bg-white px-4 py-2 hover:border-orange-400 transition"
+                                                value=a.clone()
+                                            >
+                                                {a.clone()}
+                                            </Radio>
+                                        }
+                                    })
+                                    .collect_view()}
+                            </RadioGroup>
+                        </div>
+                    </div>
                 }
             }}
 

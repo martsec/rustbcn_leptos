@@ -120,6 +120,7 @@ pub fn WhatIsAbout() -> impl IntoView {
         }
     });
     view! {
+        <BkgImg img="Surveillance" alt="" />
         <Slide title="What are we going to see?">
             <Appear id=1>
                 <Button size="large" variant="normal" on:click=on_click>
@@ -156,7 +157,7 @@ pub fn WhatIsAbout() -> impl IntoView {
                         "Exhilarant".to_string(),
                     ],
                 } />
-                <Alert class="not-prose">
+                <Alert class="not-prose max-w-100">
                     {icon!(icondata::ImEye)} <AlertTitle>"Interactive web apps"</AlertTitle>
                     <AlertDescription>"With HTML sent from the server"</AlertDescription>
                 </Alert>

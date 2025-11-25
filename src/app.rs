@@ -28,6 +28,7 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                 <script defer src="prism.js" data-manual></script>
                 <script type="module">
                     // cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+                    // cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
                     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
                       window.mermaid = mermaid;
                     mermaid.initialize({ startOnLoad: false });

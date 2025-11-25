@@ -50,6 +50,7 @@ pub fn GoodAndBad() -> impl IntoView {
     let title = "Good, bad, ugly";
     let notes = r#""#;
     view! {
+        <BkgImg img="Bias" alt="" />
         <Slide title=title notes=notes>
             <p>TODO</p>
 
@@ -70,6 +71,7 @@ pub fn GoodAndBad() -> impl IntoView {
 #[component]
 pub fn Overall() -> impl IntoView {
     view! {
+        <BkgImg img="TermsAndConditions" alt="" />
         <Slide title="Summary">
             <p>
                 "Leptos feels old style open source: created for the love of providing better software"
@@ -99,6 +101,7 @@ pub fn Overall() -> impl IntoView {
 #[component]
 pub fn QuestionsAndCredits() -> impl IntoView {
     view! {
+        <BkgImg img="PressCoverage" alt="" />
         <Slide title="Questions?">
 
             <p>"Credits and thanks"</p>
