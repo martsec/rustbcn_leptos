@@ -19,7 +19,7 @@ pub fn Initial() -> impl IntoView {
             </h1>
 
             <p class="text-slate-400 italic">
-                "Pray the demo gods because this is actually a demo"
+                "Pray to the demo gods because this is actually a demo"
             </p>
         </Slide>
         <BkgImg img="Hype" alt="" />
