@@ -104,6 +104,35 @@ help: open tag that should be closed; it's started here
 }
 
 #[component]
+pub fn NoMacroSyntax() -> impl IntoView {
+    let title = "You don't like macros? Leptos got you";
+    let notes = r#""#;
+    let code = r#"use crate::slides::{Appear, Slide, SlideProps};
+use leptos::prelude::*;
+use leptos::html::*;
+
+#[component]
+pub fn ViewMacro() -> impl IntoView {
+    let code = "...".to_string();
+
+    Slide(SlideProps {
+        title: "Typecheck your HTML".into(),
+        children: Box::new(move || {
+            let p = p().child("Let's apply recursion on this page");
+            let code_el = code().child(code.clone());
+            vec![p.into_view(), code_el.into_view()].into_view()
+        }),
+        ..Default::default()
+    })
+}"#;
+    view! {
+      <Slide title=title notes=notes>
+                <Code code=code />
+      </Slide>
+    }
+}
+
+#[component]
 pub fn Reactivity() -> impl IntoView {
     let count = RwSignal::new(0);
     let on_click = move |_| *count.write() += 1;

@@ -6,9 +6,10 @@ use leptos_animate::animate;
 use leptos_animate::animations::classes::{In, Out};
 use leptos_animate::animations::flip::Flip;
 use leptos_hotkeys::use_hotkeys;
+use singlestage::kbd::*;
 
 use crate::components::ProgressBar;
-use crate::server_fns::{update_slides, ANSWERS_SIGNAL};
+use crate::server_fns::{update_slides, ANSWERS_SIGNAL, PARTICIPANTS_SIGNAL};
 use crate::server_fns::{AnsweredQuestion, SlideStatistics};
 use crate::slides::a_intro::*;
 use crate::slides::b_leptos::*;
@@ -25,6 +26,8 @@ pub fn SlidesPage() -> impl IntoView {
     // We need to init the channels we are going to read from
     let default: HashMap<String, AnsweredQuestion> = HashMap::new();
     let _ = leptos_ws::ReadOnlySignal::new(ANSWERS_SIGNAL, default).unwrap();
+    let default_users: Vec<String> = vec![];
+    let _ = leptos_ws::ReadOnlySignal::new(PARTICIPANTS_SIGNAL, default_users).unwrap();
 
     view! { <SlideDeck /> }
 }
@@ -119,10 +122,13 @@ fn SlideDeck() -> impl IntoView {
         AboutMe,
         AboutYou,
         WhatIsAbout,
+        Alternatives,
         MpaSpa,
+        Wasm,
         // 2Leptos
         UiComponent,
         ViewMacro,
+        NoMacroSyntax,
         Reactivity,
         Contexts,
         Stores,
@@ -135,6 +141,8 @@ fn SlideDeck() -> impl IntoView {
         Extra,
         // Final
         FinalSection,
+        CsrExample,
+        SsrExample,
         GoodAndBad,
         AiBots,
         Overall,
@@ -178,30 +186,37 @@ fn SlideDeck() -> impl IntoView {
     });
 
     view! {
-        <div class="min-h-screen max-h-screen flex flex-col">
-            <header class="">
-                <ProgressBar stats=stats />
-            </header>
+            <div class="min-h-screen max-h-screen flex flex-col">
+                <header class="">
+                    <ProgressBar stats=stats />
+                </header>
 
-            <main class="flex-1 flex items-center justify-center relative overflow-x-hidden md:overflow-hidden">
-                <div class="w-full max-w-5xl" use:animate=Flip::watch(current)>
-                    {slides}
-                </div>
-            </main>
+                <main class="flex-1 flex items-center justify-center relative overflow-x-hidden md:overflow-hidden">
+                    <div class="w-full max-w-5xl" use:animate=Flip::watch(current)>
+                        {slides}
+                    </div>
+                </main>
 
-            <footer class="border-t border-slate-800">
-                <div class="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between text-sm items-stretch text-slate-600">
-                    <span class="font-semibold ">"Leptos full stack - Rust BCN"</span>
-                    <span class="">
-                        "2025 - "<a target="_blank" href="https://8vi.cat">
-                            martsec - 8vi.cat
-                        </a>
-                    </span>
-                    <span class="font-mono text-xs">
-                        {move || format!("{}/{}", current.get() + 1, total)}
-                    </span>
-                </div>
-            </footer>
-        </div>
-    }
+
+
+                <footer class="border-t border-slate-800">
+                    <div class="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between text-sm items-stretch text-slate-600">
+                        <span class="font-semibold ">"Leptos full stack - Rust BCN"</span>
+                        <span class="">
+                            "2025 - "<a target="_blank" href="https://8vi.cat">
+                                martsec - 8vi.cat
+                            </a>
+                        </span>
+               <span class="text-right text-xs text-slate-500">
+      <Kbd>j</Kbd>/<Kbd>k</Kbd> reveal text
+      <Kbd>l</Kbd>/<Kbd>h</Kbd> change slides
+    </span>
+                        <span class="font-mono text-xs">
+                            {move || format!("{}/{}", current.get() + 1, total)}
+                        </span>
+
+                    </div>
+                </footer>
+            </div>
+        }
 }

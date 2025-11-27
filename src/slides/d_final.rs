@@ -27,6 +27,54 @@ pub fn FinalSection() -> impl IntoView {
         <BkgImg img="BoardChaos" alt="" />
     }
 }
+
+#[component]
+pub fn CsrExample() -> impl IntoView {
+    let title = "Client Side Render Example";
+    let notes = r#"How do we tie everything together?"#;
+    view! {
+      <Slide title=title notes=notes>
+        <h5 class="text-center"><a href="https://cata.wine" target="_blank">"🍷 cata.wine"</a></h5>
+                <Appear id=1>
+            <ul class="list-disc pl-5 space-y-1 md:grid md:grid-cols-2">
+            <li>"Persisted state"</li>
+            <li>"Local storage"</li>
+            <li>"Export/import"</li>
+            <li>"Different languages"</li>
+            <li>"Conditional components"</li>
+            <li>"Responsive + mobile webapp"</li>
+            <li>"Future: iOS/Andriod w/ Tauri"</li>
+            </ul>
+
+                </Appear>
+      </Slide>
+    }
+}
+
+#[component]
+pub fn SsrExample() -> impl IntoView {
+    let title = "Server Side Request Example";
+    let notes = r#"How do we tie everything together?"#;
+    view! {
+        <BkgImg img="Ethics" alt="" />
+      <Slide title=title notes=notes>
+        <h5 class="text-center"><a href="https://plai.cards" target="_blank">"🃏 plai.cards"</a></h5>
+                <Appear id=1>
+            <ul class="list-disc pl-5 space-y-1 md:grid md:grid-cols-2">
+            <li>"Different languages"</li>
+            <li>"Backoffice"</li>
+            <li>"Sqlite-like DB"</li>
+            <li>"Auth"</li>
+            <li>"PoW protection"</li>
+            <li>"Spreadsheet export"</li>
+
+            </ul>
+
+                </Appear>
+      </Slide>
+    }
+}
+
 #[component]
 pub fn AiBots() -> impl IntoView {
     view! {
@@ -47,25 +95,48 @@ pub fn AiBots() -> impl IntoView {
 
 #[component]
 pub fn GoodAndBad() -> impl IntoView {
-    let title = "Good, bad, ugly";
+    let title = "Good, meh, bad";
     let notes = r#""#;
     view! {
-        <BkgImg img="Bias" alt="" />
-        <Slide title=title notes=notes>
-            <p>TODO</p>
+            <BkgImg img="Bias" alt="" />
+            <Slide title=title notes=notes>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 not-prose my-auto">
 
-            "
-            Good: 
-            * typed everything
-            * Same interfaces and classes
-            
-            Bad:
-            * Compilation times
-            
-            "
+      <div class="p-6 rounded-xl bg-green-50 border border-green-200">
+        <h3 class="text-xl font-bold text-green-700 mb-3">Good</h3>
+        <ul class="space-y-1 text-green-900">
+          <li>Actively developed</li>
+          <li>Typed everything</li>
+          <li>"Same interfaces & classes"</li>
+          <li>"Your trusted Rust ecosystem (cargo, crates, bacon...)"</li>
+          <li>Integration with JS libraries</li>
+        </ul>
+      </div>
 
-        </Slide>
-    }
+      <div class="p-6 rounded-xl bg-yellow-50 border border-yellow-200">
+        <h3 class="text-xl font-bold text-yellow-700 mb-3">Meh</h3>
+        <ul class="space-y-1 text-yellow-900">
+          <li>Compilation times</li>
+          <li>Big-ish WASM bundle</li>
+          <li>Occasional lib patching due to wasm-bindgen versions</li>
+        </ul>
+      </div>
+
+      <div class="p-6 rounded-xl bg-red-50 border border-red-200">
+        <h3 class="text-xl font-bold text-red-700 mb-3">Ugly</h3>
+        <ul class="space-y-1 text-red-900">
+          <li>No std library</li>
+          <li>"No native time, use "<code>chrono</code></li>
+          <li>WASM sizes penalize SEO</li>
+        </ul>
+      </div>
+
+    </div>
+
+
+
+            </Slide>
+        }
 }
 
 #[component]
@@ -74,7 +145,7 @@ pub fn Overall() -> impl IntoView {
         <BkgImg img="TermsAndConditions" alt="" />
         <Slide title="Summary">
             <p>
-                "Leptos feels old style open source: created for the love of providing better software"
+                "Leptos feels old style open source: created for the love of providing omething useful"
             </p>
 
             <ul class="list-disc pl-5 space-y-1">
@@ -86,10 +157,10 @@ pub fn Overall() -> impl IntoView {
                 </Appear>
 
                 <Appear id=3>
-                    <li>""</li>
+                    <li>"Evolving (e.g. wasm splitting)"</li>
                 </Appear>
                 <Appear id=1>
-                    <li>"Tricky in some places"</li>
+                    <li>"Tricky in some places (e.g. copy everything)"</li>
                 </Appear>
 
             </ul>
@@ -114,11 +185,6 @@ pub fn QuestionsAndCredits() -> impl IntoView {
                     " for creating "
                     <a href="https://www.leptos.dev/" target="_blank">
                         leptos
-                    </a>
-                </li>
-                <li>
-                    <a target="_blank" href="">
-                        ""
                     </a>
                 </li>
                 <li>

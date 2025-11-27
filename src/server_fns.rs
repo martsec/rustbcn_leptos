@@ -10,6 +10,8 @@ pub struct SlideStatistics {
     pub total: u32,
 }
 
+pub static PARTICIPANTS_SIGNAL: &str = "participants";
+
 #[server]
 pub async fn update_slides(stats: SlideStatistics) -> Result<(), ServerFnError> {
     let ws = leptos_ws::ReadOnlySignal::new("slidestats", SlideStatistics::default()).unwrap();
@@ -30,6 +32,12 @@ pub async fn register_user(username: String) -> Result<(), ServerFnError> {
     }
 
     users.insert(username, Utc::now());
+    let current_users: Vec<String> = users.keys().cloned().collect();
+    drop(users);
+
+    let default_users: Vec<String> = vec![];
+    let ws = leptos_ws::ReadOnlySignal::new(PARTICIPANTS_SIGNAL, default_users).unwrap();
+    ws.update(move |v| *v = current_users);
     Ok(())
 }
 

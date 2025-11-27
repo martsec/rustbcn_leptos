@@ -72,7 +72,7 @@ pub fn QuizzArea() -> impl IntoView {
 
                             <div class="not-prose space-y-3">
                                 <Input input_type="text" value=username>
-                                    "What's your name?"
+                                    "What's your alias? (it will appear on screen and be recorded)"
                                 </Input>
 
                                 <Button
