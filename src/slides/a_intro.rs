@@ -55,8 +55,8 @@ pub fn AboutMe() -> impl IntoView {
                     </div>
                     <div>
                         <Appear id=5>
-                        <h4>"I hate"</h4>
-                        <p>"Fake open source"</p>
+                            <h4>"I hate"</h4>
+                            <p>"Fake open source"</p>
                         </Appear>
                         <Appear id=6>
                             <p class="text-red-800 font-bold">"Javascript & environment"</p>
@@ -73,46 +73,48 @@ pub fn AboutMe() -> impl IntoView {
 #[component]
 pub fn AboutYou() -> impl IntoView {
     view! {
-                <Slide title="About you">
-                    <p>"Let's try something interactive, go to "<a href="https://leptos.8vi.cat">"leptos.8vi.cat"</a></p>
-                        <Replace id=0>
-    <NameList />
-                    </Replace>
+        <Slide title="About you">
+            <p>
+                "Let's try something interactive, go to "
+                <a href="https://leptos.8vi.cat">"leptos.8vi.cat"</a>
+            </p>
+            <Replace id=0>
+                <NameList />
+            </Replace>
 
-                    <Replace id=1>
-                        <QuestionBlock q=Question {
-                            text: "What is your main area of expertise?".into(),
-                            answers: vec![
-                                "Backend".to_string(),
-                                "Frontend".to_string(),
-                                "Full stack".to_string(),
-                                "Data".to_string(),
-                                "Other".to_string(),
-                                "None".to_string(),
-                            ],
-                        } />
-                    </Replace>
-                    <Replace id=2>
-                        <QuestionBlock q=Question {
-                            text: "Have you ever built a website?".into(),
-                            answers: vec!["Yes".to_string(), "No".to_string()],
-                        } />
-                    </Replace>
-                    <Replace id=23>
-                        <QuestionBlock q=Question {
-                            text: "And an API?".into(),
-                            answers: vec!["Yes".to_string(), "No".to_string()],
-                        } />
-                    </Replace>
+            <Replace id=1>
+                <QuestionBlock q=Question {
+                    text: "What is your main area of expertise?".into(),
+                    answers: vec![
+                        "Backend".to_string(),
+                        "Frontend".to_string(),
+                        "Full stack".to_string(),
+                        "Data".to_string(),
+                        "Other".to_string(),
+                        "None".to_string(),
+                    ],
+                } />
+            </Replace>
+            <Replace id=2>
+                <QuestionBlock q=Question {
+                    text: "Have you ever built a website?".into(),
+                    answers: vec!["Yes".to_string(), "No".to_string()],
+                } />
+            </Replace>
+            <Replace id=23>
+                <QuestionBlock q=Question {
+                    text: "And an API?".into(),
+                    answers: vec!["Yes".to_string(), "No".to_string()],
+                } />
+            </Replace>
 
-
-                // - How much experience do you have in rust?
-                // - And building APIs?
-                // - And with frontend?
-                // - And Full stack?
-                </Slide>
-                <BkgImg img="10XEngineer" alt="it's you, a 10x engineer" />
-            }
+        // - How much experience do you have in rust?
+        // - And building APIs?
+        // - And with frontend?
+        // - And Full stack?
+        </Slide>
+        <BkgImg img="10XEngineer" alt="it's you, a 10x engineer" />
+    }
 }
 
 #[component]
@@ -121,13 +123,21 @@ pub fn NameList() -> impl IntoView {
     let ws = leptos_ws::ReadOnlySignal::new(PARTICIPANTS_SIGNAL, default_users).unwrap();
 
     view! {
+        <img src="/qr.png" class="h-60 w-60" />
 
-                <img src="/qr.png" class="h-60 w-60" />
-
-                        <p>{move || ws.get().into_iter()
-                .map(|n| view! {" "<Kbd>{n}</Kbd>})
-                .collect::<Vec<_>>()}
-    </p>
+        <p>
+            {move || {
+                ws.get()
+                    .into_iter()
+                    .map(|n| {
+                        view! {
+                            " "
+                            <Kbd>{n}</Kbd>
+                        }
+                    })
+                    .collect::<Vec<_>>()
+            }}
+        </p>
     }
 }
 
@@ -200,31 +210,31 @@ pub fn Alternatives() -> impl IntoView {
     let title = "What options are there?";
     let notes = r#""#;
     view! {
-      <Slide title=title notes=notes>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 not-prose my-auto">
-      <div class="p-6 rounded-xl bg-red-50 border border-red-200">
-        <h3 class="text-xl font-bold text-red-700 mb-3">JavaScript</h3>
-        <ul class="space-y-1 text-red-900">
-          <li>React</li>
-          <li>Vue</li>
-          <li>Angular</li>
-          <li>Svelte</li>
-          <li>Solid</li>
-        </ul>
-      </div>
-      <div class="p-6 rounded-xl bg-green-50 border border-green-200">
-        <h3 class="text-xl font-bold text-green-700 mb-3">Rust</h3>
-        <ul class="space-y-1 text-green-900">
-          <li>Yew</li>
-          <li>Leptos</li>
-          <li>Dioxus</li>
-          <li>Sycamore</li>
-        </ul>
-      </div>
+        <Slide title=title notes=notes>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 not-prose my-auto">
+                <div class="p-6 rounded-xl bg-red-50 border border-red-200">
+                    <h3 class="text-xl font-bold text-red-700 mb-3">JavaScript</h3>
+                    <ul class="space-y-1 text-red-900">
+                        <li>React</li>
+                        <li>Vue</li>
+                        <li>Angular</li>
+                        <li>Svelte</li>
+                        <li>Solid</li>
+                    </ul>
+                </div>
+                <div class="p-6 rounded-xl bg-green-50 border border-green-200">
+                    <h3 class="text-xl font-bold text-green-700 mb-3">Rust</h3>
+                    <ul class="space-y-1 text-green-900">
+                        <li>Yew</li>
+                        <li>Leptos</li>
+                        <li>Dioxus</li>
+                        <li>Sycamore</li>
+                    </ul>
+                </div>
 
-    </div>
+            </div>
 
-      </Slide>
+        </Slide>
     }
 }
 
@@ -337,21 +347,30 @@ pub fn Wasm() -> impl IntoView {
 Use it for 
     "#;
     view! {
-          <Slide title=title notes=notes>
+        <Slide title=title notes=notes>
             <p>
-      Low-level binary format that runs in the browser at
-      near-native speed.
-    </p>
-    <ul class="list-disc pl-5 space-y-1">
-      <li>Web standard</li>
-      <li>Sandboxed <a target="_blank" href="https://github.com/krausest/js-framework-benchmark">native-like execution</a>.</li>
-    <li>C, C++, Rust, Go, Python, JVM, Julia, Ruby...</li>
-      <li>Portable compilation target.</li>
-      <li>Can call JS and browser APIs.</li>
-      <li>Parsed faster than JS.</li>
-      <li>Check <a target="_blank" href="https://bevy.org/examples/">Bevy, a rust game engine</a> that compiles to wasm.</li>
-    </ul>
+                Low-level binary format that runs in the browser at
+                near-native speed.
+            </p>
+            <ul class="list-disc pl-5 space-y-1">
+                <li>Web standard</li>
+                <li>
+                    Sandboxed
+                    <a target="_blank" href="https://github.com/krausest/js-framework-benchmark">
+                        native-like execution
+                    </a>.
+                </li>
+                <li>C, C++, Rust, Go, Python, JVM, Julia, Ruby...</li>
+                <li>Portable compilation target.</li>
+                <li>Can call JS and browser APIs.</li>
+                <li>Parsed faster than JS.</li>
+                <li>
+                    Check <a target="_blank" href="https://bevy.org/examples/">
+                        Bevy, a rust game engine
+                    </a>that compiles to wasm.
+                </li>
+            </ul>
 
-          </Slide>
-      }
+        </Slide>
+    }
 }

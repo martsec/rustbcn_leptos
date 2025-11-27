@@ -126,9 +126,9 @@ pub fn ViewMacro() -> impl IntoView {
     })
 }"#;
     view! {
-      <Slide title=title notes=notes>
-                <Code code=code />
-      </Slide>
+        <Slide title=title notes=notes>
+            <Code code=code />
+        </Slide>
     }
 }
 

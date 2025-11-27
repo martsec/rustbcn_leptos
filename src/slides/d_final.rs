@@ -33,21 +33,25 @@ pub fn CsrExample() -> impl IntoView {
     let title = "Client Side Render Example";
     let notes = r#"How do we tie everything together?"#;
     view! {
-      <Slide title=title notes=notes>
-        <h5 class="text-center"><a href="https://cata.wine" target="_blank">"🍷 cata.wine"</a></h5>
-                <Appear id=1>
-            <ul class="list-disc pl-5 space-y-1 md:grid md:grid-cols-2">
-            <li>"Persisted state"</li>
-            <li>"Local storage"</li>
-            <li>"Export/import"</li>
-            <li>"Different languages"</li>
-            <li>"Conditional components"</li>
-            <li>"Responsive + mobile webapp"</li>
-            <li>"Future: iOS/Andriod w/ Tauri"</li>
-            </ul>
+        <Slide title=title notes=notes>
+            <h5 class="text-center">
+                <a href="https://cata.wine" target="_blank">
+                    "🍷 cata.wine"
+                </a>
+            </h5>
+            <Appear id=1>
+                <ul class="list-disc pl-5 space-y-1 md:grid md:grid-cols-2">
+                    <li>"Persisted state"</li>
+                    <li>"Local storage"</li>
+                    <li>"Export/import"</li>
+                    <li>"Different languages"</li>
+                    <li>"Conditional components"</li>
+                    <li>"Responsive + mobile webapp"</li>
+                    <li>"Future: iOS/Andriod w/ Tauri"</li>
+                </ul>
 
-                </Appear>
-      </Slide>
+            </Appear>
+        </Slide>
     }
 }
 
@@ -57,21 +61,25 @@ pub fn SsrExample() -> impl IntoView {
     let notes = r#"How do we tie everything together?"#;
     view! {
         <BkgImg img="Ethics" alt="" />
-      <Slide title=title notes=notes>
-        <h5 class="text-center"><a href="https://plai.cards" target="_blank">"🃏 plai.cards"</a></h5>
-                <Appear id=1>
-            <ul class="list-disc pl-5 space-y-1 md:grid md:grid-cols-2">
-            <li>"Different languages"</li>
-            <li>"Backoffice"</li>
-            <li>"Sqlite-like DB"</li>
-            <li>"Auth"</li>
-            <li>"PoW protection"</li>
-            <li>"Spreadsheet export"</li>
+        <Slide title=title notes=notes>
+            <h5 class="text-center">
+                <a href="https://plai.cards" target="_blank">
+                    "🃏 plai.cards"
+                </a>
+            </h5>
+            <Appear id=1>
+                <ul class="list-disc pl-5 space-y-1 md:grid md:grid-cols-2">
+                    <li>"Different languages"</li>
+                    <li>"Backoffice"</li>
+                    <li>"Sqlite-like DB"</li>
+                    <li>"Auth"</li>
+                    <li>"PoW protection"</li>
+                    <li>"Spreadsheet export"</li>
 
-            </ul>
+                </ul>
 
-                </Appear>
-      </Slide>
+            </Appear>
+        </Slide>
     }
 }
 
@@ -98,45 +106,43 @@ pub fn GoodAndBad() -> impl IntoView {
     let title = "Good, meh, bad";
     let notes = r#""#;
     view! {
-            <BkgImg img="Bias" alt="" />
-            <Slide title=title notes=notes>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 not-prose my-auto">
+        <BkgImg img="Bias" alt="" />
+        <Slide title=title notes=notes>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 not-prose my-auto">
 
-      <div class="p-6 rounded-xl bg-green-50 border border-green-200">
-        <h3 class="text-xl font-bold text-green-700 mb-3">Good</h3>
-        <ul class="space-y-1 text-green-900">
-          <li>Actively developed</li>
-          <li>Typed everything</li>
-          <li>"Same interfaces & classes"</li>
-          <li>"Your trusted Rust ecosystem (cargo, crates, bacon...)"</li>
-          <li>Integration with JS libraries</li>
-        </ul>
-      </div>
+                <div class="p-6 rounded-xl bg-green-50 border border-green-200">
+                    <h3 class="text-xl font-bold text-green-700 mb-3">Good</h3>
+                    <ul class="space-y-1 text-green-900">
+                        <li>Actively developed</li>
+                        <li>Typed everything</li>
+                        <li>"Same interfaces & classes"</li>
+                        <li>"Your trusted Rust ecosystem (cargo, crates, bacon...)"</li>
+                        <li>Integration with JS libraries</li>
+                    </ul>
+                </div>
 
-      <div class="p-6 rounded-xl bg-yellow-50 border border-yellow-200">
-        <h3 class="text-xl font-bold text-yellow-700 mb-3">Meh</h3>
-        <ul class="space-y-1 text-yellow-900">
-          <li>Compilation times</li>
-          <li>Big-ish WASM bundle</li>
-          <li>Occasional lib patching due to wasm-bindgen versions</li>
-        </ul>
-      </div>
+                <div class="p-6 rounded-xl bg-yellow-50 border border-yellow-200">
+                    <h3 class="text-xl font-bold text-yellow-700 mb-3">Meh</h3>
+                    <ul class="space-y-1 text-yellow-900">
+                        <li>Compilation times</li>
+                        <li>Big-ish WASM bundle</li>
+                        <li>Occasional lib patching due to wasm-bindgen versions</li>
+                    </ul>
+                </div>
 
-      <div class="p-6 rounded-xl bg-red-50 border border-red-200">
-        <h3 class="text-xl font-bold text-red-700 mb-3">Ugly</h3>
-        <ul class="space-y-1 text-red-900">
-          <li>No std library</li>
-          <li>"No native time, use "<code>chrono</code></li>
-          <li>WASM sizes penalize SEO</li>
-        </ul>
-      </div>
+                <div class="p-6 rounded-xl bg-red-50 border border-red-200">
+                    <h3 class="text-xl font-bold text-red-700 mb-3">Ugly</h3>
+                    <ul class="space-y-1 text-red-900">
+                        <li>No std library</li>
+                        <li>"No native time, use "<code>chrono</code></li>
+                        <li>WASM sizes penalize SEO</li>
+                    </ul>
+                </div>
 
-    </div>
+            </div>
 
-
-
-            </Slide>
-        }
+        </Slide>
+    }
 }
 
 #[component]
