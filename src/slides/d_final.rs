@@ -51,6 +51,7 @@ pub fn CsrExample() -> impl IntoView {
                 </ul>
 
             </Appear>
+            <BkgImg img="TheCEO" alt="" />
         </Slide>
     }
 }
@@ -266,5 +267,7 @@ pub fn Resources() -> impl IntoView {
             // <li><a target="_blank" href="">""</a></li>
             </ul>
         </Slide>
+
+        <BkgImg img="DataScientist" alt="" />
     }
 }

@@ -51,12 +51,20 @@ fn Slide(
 
     view! {
         <section
-            class="md:aspect-video w-full p-8 flex flex-col gap-4 prose prose-slate md:prose-xl lg:prose-2xl max-w-none"
+            class="md:aspect-video w-full p-8 flex flex-col gap-4 prose prose-slate md:prose-xl lg:prose-2xl max-w-none transform-gpu"
 
-            use:animate=(
-                In::default().source("opacity-0").active("duration-150").target("opacity-100"),
-                Out::default().source("opacity-100").active("duration-150").target("opacity-0"),
-            )
+            // use:animate=(
+            // //        In::default().source("opacity-0").active("duration-150").target("opacity-100"),
+            //   //  Out::default().source("opacity-100").active("duration-150").target("opacity-0"),
+            // In::default()
+            //     .source("opacity-0 translate-x-full")
+            //     .active("duration-1000 ease-out transition-[opacity,transform]")
+            //     .target("opacity-100 translate-x-0"),
+            // Out::default()
+            //     .source("opacity-100 translate-x-0")
+            //     .active("duration-500 ease-in transition-[opacity,transform]")
+            //     .target("opacity-0 -translate-x-full"),
+            // )
         >
             <h1>{title}</h1>
             <div class="text-base">{children()}</div>

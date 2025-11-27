@@ -28,8 +28,6 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                 <script defer src="prism.js" data-manual></script>
                 <script type="module">
                     // cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-                    // cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-                    // cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
                     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
                       window.mermaid = mermaid;
                     mermaid.initialize({ startOnLoad: false });
@@ -48,14 +46,10 @@ pub fn App() -> impl IntoView {
     let HotkeysContext { .. } = provide_hotkeys_context(main_ref, false, scopes!());
 
     view! {
-        // injects a stylesheet into the document <head>
-        // id=leptos means cargo-leptos will hot-reload this stylesheet
         <Stylesheet id="leptos" href="/pkg/rustbcn_leptos.css" />
 
-        // sets the document title
         <Title text="🦀 Full stack: Leptos - 🦀 Barcelona" />
 
-        // content for this welcome page
         <ThemeProvider>
             <Router>
                 <main node_ref=main_ref>

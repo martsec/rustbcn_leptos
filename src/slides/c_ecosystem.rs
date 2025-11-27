@@ -136,5 +136,7 @@ pub fn Extra() -> impl IntoView {
             <p>Translations with <code>leptos_i18n</code>or <code>"leptos-fluent"</code></p>
             <p></p>
         </Slide>
+
+        <BkgImg img="MachineLearningOperations" alt="" />
     }
 }
